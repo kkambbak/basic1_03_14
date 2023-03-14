@@ -76,8 +76,14 @@ public class HomeController {
 
     @GetMapping("/home/modifyPerson")
     @ResponseBody
-    public String modifyPerson(int id){
-
+    public String modifyPerson(int id, String name, int age){
+        Person found = list.stream().filter(person -> person.getId() == id).findFirst().orElse(null);
+        if(found!=null) {
+            found.setName(name);
+            found.setAge(age);
+            return "%d번 수정완료".formatted(id);
+        }
+        return "존재하지 않습니다.";
     }
 }
 
@@ -86,7 +92,7 @@ public class HomeController {
 @AllArgsConstructor
 class Person {
     private static int lastid;
-    private int id;
+    private final int id;
     private String name;
     private int age;
 
