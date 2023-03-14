@@ -68,22 +68,17 @@ public class HomeController {
     @GetMapping("/home/removePerson")
     @ResponseBody
     public String removePeople(int id) {
-        int index = findIndexById(id);
-        if (index == -1) return "삭제할 %d번 사람이 없습니다.".formatted(id);
-        list.remove(index);
+        boolean removed = list.removeIf(person -> person.getId() == id);
+        if (removed == false) return "삭제할 %d번 사람이 없습니다.".formatted(id);
 
         return "%d번 삭제 완료".formatted(id);
     }
 
-    public int findIndexById(int id) {
-        for (int i = 0; i < list.size(); i++) {
-            if (list.get(i).getId() == id) {
-                return i;
-            }
-        }
-        return -1;
-    }
+    @GetMapping("/home/modifyPerson")
+    @ResponseBody
+    public String modifyPerson(int id){
 
+    }
 }
 
 @Getter
