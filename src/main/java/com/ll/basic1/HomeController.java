@@ -1,5 +1,8 @@
 package com.ll.basic1;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -8,7 +11,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 @Controller //스프링부트에게 이게 컨트롤러다 라고 알려줌
 public class HomeController {
@@ -84,6 +89,33 @@ public class HomeController {
             return "%d번 수정완료".formatted(id);
         }
         return "존재하지 않습니다.";
+    }
+
+    @GetMapping("/home/reqAndResp")
+    @ResponseBody
+    public void showReqAndResp(HttpServletRequest req, HttpServletResponse resp)throws IOException {
+        int age = Integer.parseInt(req.getParameter("age"));
+        resp.getWriter().append("hello you are %d old age".formatted(age));
+
+    }
+
+    @GetMapping("/home/cookie/increase")
+    @ResponseBody
+    public int showCookieIncrease(HttpServletRequest req, HttpServletResponse resp)throws IOException {
+        int countInCookie = 0;
+        if (req.getCookies() != null) {
+            countInCookie = Arrays.stream(req.getCookies())
+                    .filter(cookie -> cookie.getName().equals("count"))
+                    .map(cookie -> cookie.getValue())
+                    .mapToInt(Integer::parseInt)
+                    .findFirst()
+                    .orElse(0);
+        }
+        int newCountInCookie = countInCookie + 1;
+
+        //브라우저의 쿠키값을 변경하면 재방문시에 스프링부트가 다시 그 값을 받게 되어 있다.
+        resp.addCookie(new Cookie("count", newCountInCookie + ""));
+        return newCountInCookie;
     }
 }
 
