@@ -1,11 +1,13 @@
 package com.ll.basic1.BoundedContext.home;
 
+import com.ll.basic1.BoundedContext.member.service.MemberService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -17,6 +19,11 @@ import java.util.Arrays;
 
 @Controller //스프링부트에게 이게 컨트롤러다 라고 알려줌
 public class HomeController {
+
+    private int count;
+    @Autowired
+    private MemberService memberService;
+
     @GetMapping("/home/main") //home/main 이런 요청이 오면
     @ResponseBody //아래 메서드를 실행 후 리턴값을 응답으로 삼음
     public String showMain() {
