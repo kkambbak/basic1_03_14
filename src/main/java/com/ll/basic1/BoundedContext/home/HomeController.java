@@ -1,4 +1,4 @@
-package com.ll.basic1;
+package com.ll.basic1.BoundedContext.home;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -117,6 +117,22 @@ public class HomeController {
         resp.addCookie(new Cookie("count", newCountInCookie + ""));
         return newCountInCookie;
     }
+    @GetMapping("/home/cookie/increases")
+    @ResponseBody
+    public int showCaseIncreases(HttpServletRequest req, HttpServletResponse resp) throws IOException{
+        int countInCookie = 0;
+        if (req.getCookies() != null) {
+            countInCookie = Arrays.stream((req.getCookies()))
+                    .filter(cookie -> cookie.getName().equals("count"))
+                    .map(cookie -> cookie.getValue())
+                    .mapToInt(Integer::parseInt)
+                    .findFirst()
+                    .orElse(0);
+        }
+        int newCountInCookie = countInCookie + 1;
+        resp.addCookie(new Cookie("count", newCountInCookie + ""));
+        return newCountInCookie;
+    }
 }
 
 @Getter
@@ -135,3 +151,4 @@ class Person {
         this(++lastid, name, age);
     }
 }
+
