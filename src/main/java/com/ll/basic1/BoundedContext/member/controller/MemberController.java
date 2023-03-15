@@ -2,6 +2,7 @@ package com.ll.basic1.BoundedContext.member.controller;
 
 import com.ll.basic1.BoundedContext.member.entity.Member;
 import com.ll.basic1.BoundedContext.member.service.MemberService;
+import com.ll.basic1.base.Rq;
 import com.ll.basic1.base.RsData;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -28,7 +29,7 @@ public class MemberController {
 
     @GetMapping("/member/login")
     @ResponseBody
-    public RsData Login(String username, String password, HttpServletResponse resp){
+    public RsData Login(String username, String password, HttpServletRequest req, HttpServletResponse resp){
         if( username == null || username.trim().length() == 0 ){
             return RsData.of("F-3", "Username을 입력해주세요");
         }
@@ -38,24 +39,28 @@ public class MemberController {
         RsData tryLoginData= memberService.tryLogin(username,password);
         if(tryLoginData.isSuccess()){
             long memberId  = (long) tryLoginData.getData();
-            resp.addCookie(new Cookie("loginedMemberId", memberId+""));
+            Rq rq = new Rq(req, resp);
+            rq.setCookie("loginedMemberId", memberId+"");  // setCookie로 변경예정
         }
         return tryLoginData;
     }
 
     @GetMapping("/member/me")
     @ResponseBody
-    public RsData showMe(HttpServletRequest req){
+    public RsData showMe(HttpServletRequest req,HttpServletResponse resp){
         long loginedMemberId = 0;
         if(req.getCookies() == null){
             return RsData.of("F-1", "로그인 후 이용해 주세요!");
         }
-        loginedMemberId = Arrays.stream(req.getCookies())
-                .filter(cookie -> cookie.getName().equals("loginedMemberId"))
-                .map(cookie -> cookie.getValue())
-                .mapToInt(Integer::parseInt)
-                .findFirst()
-                .orElse(0);
+        //rq.getCookie로 변경
+        Rq rq = new Rq(req, resp);
+        loginedMemberId = rq.getCookieAsLong("loginedMemberId", 0);
+//        loginedMemberId = Arrays.stream(req.getCookies())
+//                .filter(cookie -> cookie.getName().equals("loginedMemberId"))
+//                .map(cookie -> cookie.getValue())
+//                .mapToLong(Long::parseLong)
+//                .findFirst()
+//                .orElse(0);
 
         boolean isLogined = loginedMemberId > 0;
 
@@ -65,20 +70,13 @@ public class MemberController {
         Member member = memberService.findById(loginedMemberId);
 
         return RsData.of("S-1", "당신의 username(은)는 %s 입니다.".formatted(member.getUsername()));
-
     }
 
     @GetMapping("/member/logout")
     @ResponseBody
     public RsData loggout(HttpServletRequest req, HttpServletResponse resp) {
-        if (req.getCookies() != null) {
-            Arrays.stream(req.getCookies())
-                    .filter(e->e.getName().equals("loginedMemberId"))
-                    .forEach(e -> {
-                        e.setMaxAge(0);
-                        resp.addCookie(e);
-                    });
-        }
+        Rq rq = new Rq(req, resp);
+        rq.removeCookie("loginedMemberId");
         return RsData.of("S-1", "로그아웃되었습니다.");
     }
 }
