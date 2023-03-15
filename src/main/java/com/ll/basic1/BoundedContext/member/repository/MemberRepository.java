@@ -1,26 +1,36 @@
 package com.ll.basic1.BoundedContext.member.repository;
 
 
+import com.ll.basic1.BoundedContext.member.entity.Member;
 import lombok.Getter;
-import lombok.Setter;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 @Repository
 @Getter
 public class MemberRepository {
-    HashMap<String, String> mapMember = new HashMap<>();
+    HashMap<String, String> idPW = new HashMap<>();
+    ArrayList<Member> members = new ArrayList<>();
+
     public MemberRepository(){
-        mapMember.put("user1", "1234");
-        mapMember.put("abc", "12345");
-        mapMember.put("test", "12346");
-        mapMember.put("love", "12347");
-        mapMember.put("like", "12348");
-        mapMember.put("giving", "12349");
-        mapMember.put("thanks", "123410");
-        mapMember.put("hello", "123411");
-        mapMember.put("good", "123412");
-        mapMember.put("peace", "123413");
+        members.add(new Member("user1", "1234"));
+        members.add(new Member("abc", "12345"));
+        members.add(new Member("test", "12346"));
+        members.add(new Member("love", "12347"));
+        members.add(new Member("like", "12348"));
+        members.add(new Member("giving", "12349"));
+        members.add(new Member("thanks", "123410"));
+        members.add(new Member("hello", "123411"));
+        members.add(new Member("good", "123412"));
+        members.add(new Member("peace", "123413"));
+    }
+
+    public Member findByUsername(String username) {
+        return members.stream()
+                .filter(m -> m.getUsername().equals(username))
+                .findFirst()
+                .orElse(null);
     }
 }
