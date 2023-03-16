@@ -24,7 +24,7 @@ public class MemberController {
     private final MemberService memberService;
     private final Rq rq;
 
-    @GetMapping("/member/login")
+    @GetMapping("/member/doLogin")
     @ResponseBody
     public RsData Login(String username, String password){
         if( username == null || username.trim().length() == 0 ){
@@ -36,15 +36,20 @@ public class MemberController {
         RsData tryLoginData= memberService.tryLogin(username,password);
         if(tryLoginData.isSuccess()){
             Member member  = (Member)tryLoginData.getData();
-            rq.setCookie("loginedMemberId", member.getId());
+            rq.setSession("loginedMemberId", member.getId());
         }
         return tryLoginData;
+    }
+
+    @GetMapping("/member/login")
+    public String showLogin() {
+        return "usr/member/login";
     }
 
     @GetMapping("/member/me")
     @ResponseBody
     public RsData showMe(){
-        long loginedMemberId = rq.getCookieAsLong("loginedMemberId", 0);
+        long loginedMemberId = rq.getSessionAsLong("loginedMemberId", 0);
         boolean isLogined = loginedMemberId > 0;
 
         if (!isLogined)
@@ -58,7 +63,18 @@ public class MemberController {
     @GetMapping("/member/logout")
     @ResponseBody
     public RsData logout() {
-        rq.removeCookie("loginedMemberId");
-        return RsData.of("S-1", "로그아웃되었습니다.");
+        boolean cookieRemoved = rq.removeSession("loginedMemberId");
+
+        if (!cookieRemoved) {
+            return RsData.of("S-2", "이미 로그아웃 상태입니다.");
+        }
+        return RsData.of("S-1", "로그아웃 되었습니다.");
     }
+
+    @GetMapping("/member/session")
+    @ResponseBody
+    public String showSession() {
+        return rq.getSessionDebugContents().replaceAll("\n", "<br>");
+    }
+
 }
