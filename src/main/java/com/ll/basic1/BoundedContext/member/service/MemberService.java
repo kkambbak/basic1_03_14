@@ -26,7 +26,7 @@ public class MemberService {
         else if (!password.equals(member.getPassword())) {
             return RsData.of("F-1", "비밀번호가 일치하지 않습니다.");
         }
-        return RsData.of("S-1", "%s 님 환영합니다.".formatted(username), member.getId());
+        return RsData.of("S-1", "%s 님 환영합니다.".formatted(username), member);
     }
 
 

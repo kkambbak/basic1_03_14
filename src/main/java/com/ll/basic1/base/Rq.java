@@ -5,10 +5,14 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.springframework.stereotype.Component;
+import org.springframework.web.context.annotation.RequestScope;
 
 import java.util.Arrays;
 
 @Getter
+@Component
+@RequestScope
 @AllArgsConstructor
 public class Rq {
     private HttpServletRequest req;
@@ -22,6 +26,8 @@ public class Rq {
     }
 
     public String getCookie(String name, String value){
+        if (req.getCookies() == null) return value;
+
         return Arrays.stream(req.getCookies())
                 .filter(cookie -> cookie.getName().equals(name))
                 .map(Cookie::getValue)
@@ -29,14 +35,16 @@ public class Rq {
                 .orElse(value);
     }
 
-    public Long getCookieAsLong(String name, int value){
-        return Arrays.stream(req.getCookies())
-                .filter(cookie -> cookie.getName().equals(name))
-                .map(Cookie::getValue)
-                .mapToLong(Long::parseLong)
-                .findFirst()
-                .orElse((long)value);
-
+    public long getCookieAsLong(String name, long defaultValue){
+        String value = getCookie(name, null);
+        if (value == null) {
+            return defaultValue;
+        }
+        try {
+            return Long.parseLong(value);
+        } catch (NumberFormatException e) {
+            return defaultValue;
+        }
     }
 
     public void removeCookie(String name){
