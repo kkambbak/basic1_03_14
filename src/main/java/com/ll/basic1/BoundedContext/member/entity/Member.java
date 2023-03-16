@@ -4,10 +4,12 @@ package com.ll.basic1.BoundedContext.member.entity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @AllArgsConstructor
 @Getter
 @Setter
+@ToString
 public class Member {
     private static long lastid;
     private final long id;
