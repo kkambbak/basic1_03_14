@@ -1,4 +1,4 @@
-package com.ll.basic1.BoundedContext.member.article.entity;
+package com.ll.basic1.BoundedContext.article.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;

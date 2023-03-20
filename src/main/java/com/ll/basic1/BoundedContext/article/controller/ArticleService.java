@@ -1,11 +1,9 @@
-package com.ll.basic1.BoundedContext.member.article.controller;
+package com.ll.basic1.BoundedContext.article.controller;
 
-import com.ll.basic1.BoundedContext.member.article.entity.Article;
-import com.ll.basic1.BoundedContext.member.article.repository.ArticleRepository;
+import com.ll.basic1.BoundedContext.article.entity.Article;
+import com.ll.basic1.BoundedContext.article.repository.ArticleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
 
 @Service
 @RequiredArgsConstructor

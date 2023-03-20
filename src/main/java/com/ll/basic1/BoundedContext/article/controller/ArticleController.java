@@ -1,10 +1,8 @@
-package com.ll.basic1.BoundedContext.member.article.controller;
+package com.ll.basic1.BoundedContext.article.controller;
 
 
-import com.ll.basic1.BoundedContext.member.article.entity.Article;
-import com.ll.basic1.BoundedContext.member.article.repository.ArticleRepository;
+import com.ll.basic1.BoundedContext.article.entity.Article;
 import com.ll.basic1.base.RsData;
-import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
